@@ -1,0 +1,26 @@
+- name: create user with secondary group and add ssh key
+  hosts: server1
+  vars:
+    mygroups: developers
+    myuser: developer4
+  tasks:
+  - name: create a secondary group
+    group:
+      name: "{{ mygroups }}"
+  - name: create user and add user to secondary group
+    user:
+      name: "{{ myuser }}"
+      groups: "{{ mygroups }}"
+  - name: create in home/user/.ssh directory
+    file:
+      path: /home/{{ myuser }}/.ssh
+      state: directory
+      owner: "{{ myuser }}"
+      group: "{{ myuser }}"
+  - name: create open-ssh-pair in .ssh/id_rsa
+    openssh_keypair:
+      path: /home/{{ myuser }}/.ssh/id_rsa
+      owner: "{{ myuser }}"
+      group: "{{ myuser }}"
+      state: present
+...
